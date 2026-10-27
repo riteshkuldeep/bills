@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="robots" content="noindex">
+<title>Bill / Hisaab</title>
+<meta property="og:title" content="Bill / Hisaab"><meta property="og:description" content="Bill ki jaankari aur PDF dekhne ke liye kholein"><meta name="theme-color" content="#8E1F25">
+<style>
+:root{--bg:#F3F1EC;--card:#fff;--ink:#1D222B;--mu:#626B78;--line:#E4E1D8;--brand:#8E1F25;--brand2:#6E161B;--soft:#FBF7F1;--ok:#1F7A4D;--dr:#A3232A}
+@media (prefers-color-scheme:dark){:root{--bg:#121418;--card:#1B1E24;--ink:#ECEDEF;--mu:#9BA3AE;--line:#2B3039;--soft:#22262D;--dr:#F08A8E;--ok:#6CC495}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;-webkit-font-smoothing:antialiased}
+.top{background:linear-gradient(160deg,var(--brand),var(--brand2));color:#fff;padding:22px 18px 54px}
+.top .in{max-width:720px;margin:0 auto}
+.co{margin:0;font:800 21px/1.25 Georgia,"Times New Roman",serif;letter-spacing:.01em}
+.coa{margin:6px 0 0;font-size:13px;opacity:.85;line-height:1.45}
+main{max-width:720px;margin:-38px auto 0;padding:0 14px 28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.08);overflow:hidden}
+.hd{padding:18px 18px 4px}
+.kind{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);background:color-mix(in srgb,var(--brand) 9%,transparent);padding:4px 10px;border-radius:999px}
+@media (prefers-color-scheme:dark){.kind{color:#F3B4B7}}
+.party{margin:10px 0 0;font:800 22px/1.25 Georgia,"Times New Roman",serif}
+.place{margin:2px 0 0;color:var(--mu);font-size:14px}
+.amt{margin:16px 18px 6px;padding:14px 16px;border-radius:14px;background:var(--soft);border:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.amt span{color:var(--mu);font-size:14px}
+.amt b{font:800 26px/1.1 system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.amt b.dr{color:var(--dr)}
+dl{margin:8px 18px 4px;display:grid;grid-template-columns:auto 1fr;gap:0}
+dl div{display:contents}
+dt,dd{padding:9px 0;border-bottom:1px dashed var(--line);margin:0}
+dt{color:var(--mu);font-size:14px;padding-right:14px}
+dd{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;word-break:break-word}
+h2{margin:18px 18px 6px;font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--mu)}
+table{width:calc(100% - 36px);margin:0 18px;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;color:var(--mu);font-weight:600;font-size:12.5px;padding:6px 6px 6px 0;border-bottom:1px solid var(--line)}
+td{padding:9px 6px 9px 0;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+th.r,td.r{text-align:right;padding-right:0}
+td small{display:block;color:var(--mu);font-size:12.5px}
+td:first-child{white-space:nowrap}
+td.wrap{white-space:normal}
+.note{margin:16px 18px 0;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--brand) 6%,transparent);font-size:14.5px}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:18px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border-radius:14px;font:700 16px system-ui,sans-serif;text-decoration:none;border:1px solid var(--line);color:var(--ink);background:var(--card)}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn svg{width:20px;height:20px}
+.foot{max-width:720px;margin:14px auto 0;padding:0 18px;color:var(--mu);font-size:12.5px;text-align:center;line-height:1.6}
+.msg{padding:26px 18px;text-align:center;color:var(--mu)}
+.msg b{display:block;color:var(--ink);font-size:18px;margin-bottom:6px}
+.spin{width:28px;height:28px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;margin:0 auto 12px;animation:r 1s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+@media (max-width:420px){.acts{grid-template-columns:1fr}.party{font-size:20px}}
+</style></head>
+<body>
+<div class="top"><div class="in"><p class="co" id="co">&nbsp;</p><p class="coa" id="coa"></p></div></div>
+<main><div class="card" id="box"><div class="msg"><div class="spin"></div>Bill khul raha hai…</div></div></main>
+<p class="foot" id="foot"></p>
+<script>
+(async function () {
+  const box = document.getElementById("box");
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const nf = new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fail = (t, d) => { box.innerHTML = `<div class="msg"><b>${esc(t)}</b>${esc(d || "")}</div>`; };
+  try {
+    const h = location.hash.slice(1).split(".");
+    if (h.length < 2 || !/^[a-z0-9]+$/.test(h[0])) return fail("Link adhoora hai", "WhatsApp me aaya poora link dobara kholiye.");
+    const owner = location.hostname.split(".")[0], repo = location.pathname.split("/").filter(Boolean)[0] || "";
+    const rp = repo && repo !== "v.html" ? repo : owner + ".github.io";
+    const urls = [`s/${h[0]}.bin`, `https://raw.githubusercontent.com/${owner}/${rp}/main/s/${h[0]}.bin`];
+    let buf = null;
+    for (let t = 0; t < 10 && !buf; t++) {
+      for (const u of urls) { try { const r = await fetch(u + "?t=" + Date.now(), { cache: "no-store" }); if (r.ok) { buf = new Uint8Array(await r.arrayBuffer()); break; } } catch (e) {} }
+      if (!buf) { box.innerHTML = `<div class="msg"><div class="spin"></div>Bill abhi aa raha hai, thoda ruk jaiye…</div>`; await new Promise((r) => setTimeout(r, 4000)); }
+    }
+    if (!buf) return fail("Bill nahi mila", "Ho sakta hai link purana ho gaya ho (90 din). Bhejne wale se dobara mangwa lijiye.");
+    if (buf[0] !== 80 || buf[1] !== 75 || buf[2] !== 51) return fail("File theek nahi hai");
+    const raw = Uint8Array.from(atob(h[1].replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+    let plain;
+    try {
+      const key = await crypto.subtle.importKey("raw", raw, "AES-GCM", false, ["decrypt"]);
+      plain = new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: buf.slice(3, 15) }, key, buf.slice(15)));
+    } catch (e) { return fail("Link galat hai", "WhatsApp me aaya poora link dobara kholiye."); }
+    const ml = new DataView(plain.buffer).getUint32(0);
+    const M = JSON.parse(new TextDecoder().decode(plain.slice(4, 4 + ml)));
+    const url = URL.createObjectURL(new Blob([plain.slice(4 + ml)], { type: "application/pdf" }));
+    const name = M.n || "document.pdf";
+    const I = M.i || { title: name.replace(/\.pdf$/i, "") };
+    document.getElementById("co").textContent = M.c || "";
+    document.getElementById("coa").innerHTML = [M.ca, M.cg && "GSTIN " + M.cg, M.cp && "Ph. " + M.cp].filter(Boolean).map(esc).join(" &middot; ");
+    document.title = (I.title || "Bill") + (M.c ? " | " + M.c : "");
+    const amtNeg = I.drcr && I.amount < 0;
+    const amt = I.amount != null ? `<div class="amt"><span>${esc(I.amountLabel || "Raqam")}</span><b class="${amtNeg ? "dr" : ""}">₹ ${nf.format(Math.abs(I.amount))}${I.drcr && Math.abs(I.amount) >= 0.005 ? (I.amount < 0 ? " Dr" : " Cr") : ""}</b></div>` : "";
+    const rows = (I.rows || []).length ? `<dl>${I.rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : "";
+    const items = (I.items || []).length ? `<h2>Maal</h2><table><thead><tr><th>Item</th><th class="r">Rate</th><th class="r">Raqam</th></tr></thead><tbody>${I.items.map((x) => `<tr><td class="wrap">${esc(x[0])}<small>${esc(x[1])}</small></td><td class="r">${esc(x[2])}</td><td class="r">${esc(x[3])}</td></tr>`).join("")}</tbody></table>` : "";
+    const L = I.list && I.list.rows && I.list.rows.length ? I.list : null;
+    const list = L ? `<h2>${esc(L.title)}</h2><table><thead><tr>${L.head.map((c, i) => `<th class="${i ? "r" : ""}">${esc(c)}</th>`).join("")}</tr></thead><tbody>${L.rows.map((r) => `<tr>${r.map((c, i) => `<td class="${i ? "r" : ""}">${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table>` : "";
+    const ico = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+    box.innerHTML = `<div class="hd"><span class="kind">${esc(I.title || "Bill")}</span>${I.party ? `<p class="party">${esc(I.party)}</p>` : ""}${I.place ? `<p class="place">${esc(I.place)}</p>` : ""}</div>
+      ${amt}${rows}${items}${list}${I.note ? `<p class="note">${esc(I.note)}</p>` : ""}
+      <div class="acts"><a class="btn pri" href="${url}" target="_blank" rel="noopener">${ico('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>')}PDF dekhein</a>
+      <a class="btn" href="${url}" download="${esc(name)}">${ico('<path d="M12 4v11m-5-5 5 5 5-5"/><path d="M4 20h16"/>')}Download</a></div>`;
+    document.getElementById("foot").innerHTML = `${M.c ? esc(M.c) + " dwara bheja gaya" : ""}${M.t ? " &middot; " + esc(new Date(M.t).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })) : ""}<br>Yeh page sirf link wale vyakti ke liye hai. Koi farak lage to hamse sampark karein.`;
+  } catch (e) { fail("Bill nahi khul paya", String(e && e.message || e)); }
+})();
+</script></body></html>
